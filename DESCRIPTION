@@ -1,5 +1,5 @@
 Package: piscalar
-Title: What the Package Does (One Line, Title Case)
+Title: Permutation Inference for Scalar-Valued Data
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Aymeric",
@@ -17,3 +17,5 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 URL: https://github.com/astamm/piscalar
 BugReports: https://github.com/astamm/piscalar/issues
+Imports: 
+    flipr
