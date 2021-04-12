@@ -1,9 +1,9 @@
 #' @rdname mean
 #' @export
-t_test <- function(x, y = NULL,
-                   alternative = c("two_tail", "left_tail", "right_tail"),
-                   mu = 0, paired = FALSE, var_equal = FALSE,
-                   conf_level = 0.95, B = 1000) {
+wilcox_test <- function(x, y = NULL,
+                        alternative = c("two_tail", "left_tail", "right_tail"),
+                        mu = 0, paired = FALSE,
+                        conf_level = 0.95, B = 1000L) {
   if (is.null(y))
     stop("One-sample test not yet implemented.")
   if (!is.numeric(x) || !is.numeric(y))
@@ -11,16 +11,9 @@ t_test <- function(x, y = NULL,
 
   alternative <- match.arg(alternative)
 
-  method <- if (var_equal)
-    "Two-Sample Student Permutation Test"
-  else
-    "Two-Sample Welch Permutation Test"
+  method <- "Two-Sample Wilcoxon Rank Sum (Mann-Whitney) Permutation Test"
 
-  stat_fun <- function(data, indices) {
-    stat_t(data, indices, var_equal = var_equal)
-  }
-
-  statistic <- stat_fun(
+  statistic <- stat_wilcox(
     data = c(
       purrr::array_tree(x, margin = 1),
       purrr::array_tree(y, margin = 1)
@@ -28,8 +21,9 @@ t_test <- function(x, y = NULL,
     indices = 1:length(x)
   )
 
-  pf <- flipr::PlausibilityFunction$new(mean_null, 1, x, y, stats = stat_fun)
+  pf <- flipr::PlausibilityFunction$new(mean_null, 1, x, y, stats = stat_wilcox)
   pf$set_nperms(B)
+  pf$set_totperms(length(x) * length(y))
   pf$set_alternative(alternative)
 
   estimate <- stats::optim(
@@ -64,23 +58,24 @@ t_test <- function(x, y = NULL,
         "greater",
       method = method,
       data.name = paste0(
-        rlang::expr_deparse(rlang::enexpr(x), width = Inf),
+        rlang::enexpr(x) %>% rlang::expr_deparse(width = Inf),
         " and ",
-        rlang::expr_deparse(rlang::enexpr(y), width = Inf)
+        rlang::enexpr(y) %>% rlang::expr_deparse(width = Inf)
       )
     ),
     class = "htest"
   )
 }
 
-stat_t <- function(data, indices, var_equal = FALSE) {
+stat_wilcox <- function(data, indices) {
   n <- length(data)
   n1 <- length(indices)
   n2 <- n - n1
   indices2 <- seq_len(n)[-indices]
   x1 <- unlist(data[indices])
   x2 <- unlist(data[indices2])
-  val <- stats::t.test(x2, x1, var.equal = var_equal)$statistic
-  names(val) <- if (var_equal) "student" else "welch"
+  r <- rank(c(x1, x2))
+  val <- sum(r[1:n1])
+  names(val) <- "wilcoxon"
   val
 }
