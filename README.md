@@ -1,27 +1,27 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# piscalar
+# flipscalar
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of piscalar is to …
+The goal of flipscalar is to …
 
 ## Installation
 
-You can install the released version of piscalar from
+You can install the released version of flipscalar from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("piscalar")
+install.packages("flipscalar")
 ```
 
 And the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("astamm/piscalar")
+devtools::install_github("astamm/flipscalar")
 ```
 
 ## Example
@@ -29,7 +29,7 @@ devtools::install_github("astamm/piscalar")
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(piscalar)
+library(flipscalar)
 ## basic example code
 ```
 
